@@ -1,0 +1,83 @@
+﻿@layout EmptyLayout
+@page "/signup/getting-started"
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@using AntDesign
+
+<div class="signup-title-container">
+    <div class="signup-title">Let's get started</div>
+    <div class="signup-description-text">First, you’ll need to create the account</div>
+</div>
+
+    <Form Layout="@FormLayout.Vertical"
+          Model="@GettingStartedag"
+          OnFinish="OnFinish"
+          OnFinishFailed="OnFinishFailed">
+
+        <FormItem Label="Work email" Class="custom-form-item">
+            <Input @bind-Value="@context.WorkEmail" Placeholder="Enter your work email" AutoFocus=true AutoComplete=true Bordered=false />
+        </FormItem>
+        <FormItem Label="Name" Class="custom-form-item">
+            <Input @bind-Value="@context.Name" Placeholder="Your name" AutoFocus=true AutoComplete=true Bordered=false />
+        </FormItem>
+        <FormItem Label="Mobile" Class="custom-form-item">
+        <AntDesign.Input @bind-Value="@context.Number" Placeholder="Enter your phone number" AutoFocus=true AutoComplete=true Bordered=false>
+            <AddOnBefore>
+                <SimpleSelect @bind-Value=@context.DialingCountryCode Style="width: 60px;">
+                    <SelectOptions>
+                        <SimpleSelectOption Value="+61" Label="+61"></SimpleSelectOption>
+                        <SimpleSelectOption Value="+1" Label="+1"></SimpleSelectOption>
+                    </SelectOptions>
+                </SimpleSelect>
+            </AddOnBefore>
+        </AntDesign.Input>
+        </FormItem>
+        <FormItem>
+            <Button Class="identity-button custom-button-primary" HtmlType="submit" Style="background-color: #605BFF;" Type="@AntDesign.ButtonType.Primary">
+                Next
+            </Button>
+        </FormItem>
+    </Form>
+
+
+
+@code {
+
+    [Parameter] public Action OnContinueSignup { get; set; }
+
+    public class GettingStartedModel
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Number { get; set; }
+
+        [Required]
+        public string WorkEmail { get; set; }
+
+        public string DialingCountryCode { get; set; } = "+61";
+    }
+
+    GettingStartedModel GettingStartedag = new GettingStartedModel();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+        }
+
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        OnContinueSignup();
+    }
+
+    private void OnFinishFailed(EditContext editContext)
+    {
+
+    }
+}

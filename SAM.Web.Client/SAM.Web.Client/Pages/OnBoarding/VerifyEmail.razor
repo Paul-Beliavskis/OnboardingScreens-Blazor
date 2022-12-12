@@ -1,0 +1,102 @@
+﻿@layout EmptyLayout
+@page "/verify"
+@using Microsoft.AspNetCore.WebUtilities;
+@using System.ComponentModel.DataAnnotations;
+@inject NavigationManager NavManager
+@using AntDesign;
+@using Radzen.Blazor
+@using SAM.Web.Client.Common
+
+<div class="identity-layout">
+    <div>
+        <div class="identity-header">
+            <RadzenImage Path="icons/logo.svg" Style="height:50px;" />
+        </div>
+        <div class="identity-form-wrapper">
+            <div class="identity-form-content">
+                <div class="identity-title">Complete Sign Up</div>
+                <div class="flex-auto">
+                    @if (IsLoading)
+                    {
+                        <Loader />
+                    }
+                    else
+                    {
+                        <Form Layout="@FormLayout.Vertical"
+                          Model="@CreateAccount"
+                          OnFinish="OnFinish"
+                          OnFinishFailed="OnFinishFailed">
+                            <FormItem Label="Work email" Class="custom-form-item">
+                                <Input @bind-Value="@context.WorkEmail" AutoFocus=true AutoComplete=true Bordered=false Disabled />
+                            </FormItem>
+
+                            <FormItem Label="Password" Class="custom-form-item">
+                                <InputPassword @bind-Value="@context.Password" Placeholder="Enter password" AutoComplete=true Bordered=false></InputPassword>
+                            </FormItem>
+                            <FormItem Label="Confirm Password" Class="custom-form-item">
+                                <InputPassword @bind-Value="@context.ConfirmPassword" Placeholder="Re-enter password" AutoComplete=true Bordered=false></InputPassword>
+                            </FormItem>
+                            <FormItem>
+                                <Button Class="identity-button custom-button-primary" Style="background-color: #605BFF;margin-top:15px;" Type="@AntDesign.ButtonType.Primary" HtmlType="submit"
+                                    Disabled="@(string.IsNullOrWhiteSpace(context.Password) || string.IsNullOrWhiteSpace(context.ConfirmPassword))">
+                                    Complete Sign Up
+                                </Button>
+                            </FormItem>
+                        </Form>
+                    }
+                </div>
+                @* <div> *@
+                @*     <a href="" class="identity-link">Don't have an account?</a> *@
+                @* </div> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool IsLoading = true;
+    public class CreateAccountModel
+    {
+        public string Password { get; set; }
+
+        [CompareProperty("Password",
+        ErrorMessage = "Passwords do not match")]
+        public string ConfirmPassword { get; set; }
+
+        public string WorkEmail { get; set; }
+    }
+    CreateAccountModel CreateAccount = new CreateAccountModel();
+
+    public Guid SignUpId { get; set; }
+
+    protected void HandleValidSubmit()
+    {
+
+
+    }
+
+    private void ToggleLoading()
+    {
+        IsLoading = !IsLoading;
+        StateHasChanged();
+    }
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+    }
+    private void OnFinishFailed(EditContext editContext)
+    {
+
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+    }
+
+    protected override void OnInitialized()
+    {
+
+    }
+}

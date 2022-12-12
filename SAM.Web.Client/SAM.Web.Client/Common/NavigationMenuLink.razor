@@ -1,0 +1,13 @@
+﻿@using Radzen.Blazor
+<NavLink class="@(Disabled?"menu-tab-item menu-tab-item-disabled":"menu-tab-item")" href="@Href" Match="@Match" disabled=@Disabled >
+    <RadzenImage Path="@Icon" />
+    <span>@Title</span>
+</NavLink>
+
+@code {
+    [Parameter] public string Icon { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Href { get; set; }
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public NavLinkMatch Match { get; set; }
+}

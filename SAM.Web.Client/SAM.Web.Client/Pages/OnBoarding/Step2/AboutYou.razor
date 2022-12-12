@@ -1,0 +1,143 @@
+﻿@layout EmptyLayout
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager Navigation
+@using AntDesign
+
+<div class="signup-title-container">
+    <div class="signup-title">About you</div>
+    <div class="signup-description-text">We'll use this info to personalize your experiences</div>
+</div>
+
+<Form Layout="@FormLayout.Vertical"
+      Model="@AboutYouViewModel"
+      OnFinish="OnFinish"
+      OnFinishFailed="OnFinishFailed">
+
+    <FormItem Label="What is your current role?" Class="custom-form-item">
+
+        <Dropdown @ref=currentRoleDropdown Trigger="@(new Trigger[] { Trigger.Click })" Placement="@AntDesign.Placement.BottomRight">
+            <Overlay>
+                <Menu Selectable=false>
+                    @if (currentRoles.Any())
+                    {
+                        @foreach (var item in currentRoles)
+                        {
+                            <MenuItem OnClick="(() => {currentRoleDropdown.Close(); OnCurrentRoleChanged(item);})">
+                                <span>@item</span>
+                            </MenuItem>
+                        }
+                    }
+                    else
+                    {
+                        <MenuItem>
+                            <Empty Simple=true />
+                        </MenuItem>
+                    }
+                </Menu>
+            </Overlay>
+            <Unbound Context="UnboundContext">
+                <div @ref="UnboundContext.Current" style="display:flex !important; justify-content:space-between; width:100% !important">
+                    <AntDesign.Input @bind-Value="@context.CurrentRole" Placeholder="Select Role" Bordered=false TValue="string" />
+                    <Icon Type="caret-down" style="color: #605bff; margin-top:6px" />
+                </div>
+            </Unbound>
+
+
+        </Dropdown>
+    </FormItem>
+    <FormItem Label="What CRM are you using?" Class="custom-form-item">
+
+        <Dropdown @ref=currentCRMDropdown Trigger="@(new Trigger[] { Trigger.Click })" Placement="@AntDesign.Placement.BottomRight">
+            <Overlay>
+                <Menu Selectable=false>
+                    @if (currentCRMs.Any())
+                    {
+                        @foreach (var item in currentCRMs)
+                        {
+                            <MenuItem OnClick="(() => {currentCRMDropdown.Close(); OnCurrentCRMChanged(item);})">
+                                <span>@item</span>
+                            </MenuItem>
+                        }
+                    }
+                    else
+                    {
+                        <MenuItem>
+                            <Empty Simple=true />
+                        </MenuItem>
+                    }
+                </Menu>
+            </Overlay>
+            <Unbound Context="UnboundContext">
+                <div @ref="UnboundContext.Current" style="display:flex !important; justify-content:space-between; width:100% !important">
+                    <AntDesign.Input @bind-Value="@context.CurrentCRM" Placeholder="Select your CRM" Bordered=false TValue="string" />
+                    <Icon Type="caret-down" style="color: #605bff; margin-top:6px" />
+                </div>
+            </Unbound>
+        </Dropdown>
+    </FormItem>
+    <CheckboxGroup Style="justify-content:space-around; height:150px;" Options="@goals" @bind-Value="@context.Goals" OnChange="OnGoalsChange" />
+    <FormItem>
+        <div class="sign-up-step2-btn-next">
+            <Button Class="identity-button custom-button-primary" HtmlType="submit" Style="background-color: #605BFF;" Type="@AntDesign.ButtonType.Primary">
+                Next
+            </Button>
+        </div>
+    </FormItem>
+</Form>
+
+
+
+@code {
+    [Parameter] public Action OnContinueSignup { get; set; }
+
+    void OnGoalsChange(string[] checkedValues)
+    {
+        AboutYouViewModel.Goals = checkedValues;
+    }
+
+
+    Dropdown currentRoleDropdown;
+    Dropdown currentCRMDropdown;
+
+    List<string> currentRoles = new PredefineInfo().CurrentRoles;
+    List<string> currentCRMs = new PredefineInfo().CurrentCRM;
+    string[] goals = new PredefineInfo().Goals;
+
+    public class AboutYouModel
+    {
+        public string CurrentRole { get; set; }
+
+        public string CurrentCRM { get; set; }
+
+        public string[] Goals { get; set; }
+    }
+
+    AboutYouModel AboutYouViewModel = new AboutYouModel();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+
+    }
+
+    private void OnCurrentRoleChanged(string value)
+    {
+        AboutYouViewModel.CurrentRole = value;
+        StateHasChanged();
+    }
+
+    private void OnCurrentCRMChanged(string value)
+    {
+        AboutYouViewModel.CurrentCRM = value;
+        StateHasChanged();
+    }
+
+    private void OnFinish(EditContext editContext)
+    {
+        OnContinueSignup();
+    }
+
+    private void OnFinishFailed(EditContext editContext)
+    {
+
+    }
+}

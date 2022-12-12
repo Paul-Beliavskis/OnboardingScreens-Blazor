@@ -1,0 +1,130 @@
+﻿@layout EmptyLayout
+@page "/sign-up"
+@using AntDesign
+@using SAM.Web.Client.Shared;
+@using SAM.Web.Client.Pages.OnBoarding.Step1;
+@using SAM.Web.Client.Pages.OnBoarding.Step2;
+@using SAM.Web.Client.Pages.OnBoarding.Step3;
+@using SAM.Web.Client.Pages.OnBoarding.SideDescription.Step1;
+@using SAM.Web.Client.Pages.OnBoarding.SideDescription.Step2;
+@using SAM.Web.Client.Pages.OnBoarding.SideDescription.Step3;
+
+<div>
+
+    <div class="onboarding">
+        <div class="onboarding-layout">
+            <div>
+                <div class="identity-form-wrapper">
+                    <div class="identity-form-content">
+
+
+                        @if (startSignUp != true)
+                        {
+                            <SignUpEmailForm OnContinueSignup=OnStartSignup></SignUpEmailForm>
+                        }
+                        else
+                        {
+                            <Steps Current=currentFormStep OnChange=onChange Class="Steps onboarding-progress-container" LabelPlacement="vertical">
+                                <div class="signup-step-container">
+                                    <div class="signup-step-flex">
+                                        <div class="signup-step-name-active">Account</div>
+                                        <Step />
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="signup-step-container">
+                                    <div class="signup-step-flex">
+                                        <div class="signup-step-name-active">About you</div>
+                                        <Step />
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="signup-step-container">
+                                    <div class="signup-step-flex">
+                                        <div class="signup-step-name-active">Company</div>
+                                        <Step />
+                                    </div>
+                                </div>
+                            </Steps>
+                            @if (currentFormStep == (int)SAMConstants.Meetings.SignupSteps.Steps.Step1)
+                            {
+                                <GettingStarted OnContinueSignup=OnContinueSignup></GettingStarted>
+                            }
+                            @if (currentFormStep == (int)SAMConstants.Meetings.SignupSteps.Steps.Step2)
+                            {
+                                <AboutYou OnContinueSignup=OnContinueSignup></AboutYou>
+                            }
+                            @if (currentFormStep == (int)SAMConstants.Meetings.SignupSteps.Steps.Step3)
+                            {
+                                <Company></Company>
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="onboarding-side">
+            <div class="signup-information-container">
+                @if (currentSideDescriptionStep == (int)SAMConstants.Meetings.SignupDescriptionSteps.Steps.Step1)
+                {
+                    <BeMorePrepared></BeMorePrepared>
+                }
+                @if (currentSideDescriptionStep == (int)SAMConstants.Meetings.SignupDescriptionSteps.Steps.Step2)
+                {
+                    <AskBetterQuestions></AskBetterQuestions>
+                }
+                @if (currentSideDescriptionStep == (int)SAMConstants.Meetings.SignupDescriptionSteps.Steps.Step3)
+                {
+                    <ImproveSales></ImproveSales>
+                }
+                @if (currentSideDescriptionStep == (int)SAMConstants.Meetings.SignupDescriptionSteps.Steps.Step4)
+                {
+                    <ImproveSales></ImproveSales>
+                }
+            </div>
+            <div class="signup-information-steps-container">
+                <div class="signup-information-steps">
+                    <Steps Current=currentSideDescriptionStep ProgressDot=@customDot>
+                        <Step />
+                        <Step />
+                        <Step />
+                        <Step />
+                    </Steps>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    RenderFragment customDot = @<span>
+        step {index} status: {status}
+    </span>;
+
+    int currentFormStep;
+    int currentSideDescriptionStep;
+
+    bool startSignUp = false;
+
+    void OnStartSignup()
+    {
+        this.startSignUp = true;
+        this.currentSideDescriptionStep++;
+
+        StateHasChanged();
+    }
+
+    void OnContinueSignup()
+    {
+        this.currentFormStep++;
+        this.currentSideDescriptionStep++;
+
+        StateHasChanged();
+    }
+
+    void onChange(int current)
+    {
+        this.currentFormStep = current;
+    }
+}

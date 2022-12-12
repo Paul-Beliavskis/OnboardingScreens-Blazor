@@ -1,0 +1,173 @@
+﻿@layout EmptyLayout
+@using System.ComponentModel.DataAnnotations
+@using AntDesign
+@inject NavigationManager Navigation
+
+<div class="signup-title-container">
+    <div class="signup-title">About your company</div>
+    <div class="signup-description-text">We'll use this info to personalize your experiences</div>
+</div>
+
+<Form Layout="@FormLayout.Vertical"
+      Model="@AboutYourCompanyViewModel"
+      OnFinish="OnFinish"
+      OnFinishFailed="OnFinishFailed">
+    <FormItem Label="Company name" Class="custom-form-item">
+        <Input @bind-Value="@context.CompanyName" Placeholder="Enter company name" AutoFocus=true AutoComplete=true Bordered=false />
+    </FormItem>
+    <FormItem Label="How big is your company?" Class="custom-form-item">
+        <Dropdown @ref=companySizeDropdown Trigger="@(new Trigger[] { Trigger.Click })" Placement="@AntDesign.Placement.BottomRight">
+            <Overlay>
+                <Menu Selectable=false>
+                    @if (companySizes.Any())
+                    {
+                        @foreach (var item in companySizes)
+                        {
+                            <MenuItem OnClick="(() => {companySizeDropdown.Close(); OnCompanySizeChanged(item);})">
+                                <span>@item</span>
+                            </MenuItem>
+                        }
+                    }
+                    else
+                    {
+                        <MenuItem>
+                            <Empty Simple=true />
+                        </MenuItem>
+                    }
+                </Menu>
+            </Overlay>
+            <Unbound Context="UnboundContext">
+                <div @ref="UnboundContext.Current" style="display:flex !important; justify-content:space-between; width:100% !important">
+                    <AntDesign.Input @bind-Value="@context.CompanySize" Placeholder="Choose how many employees you have" Bordered=false TValue="string" />
+                    <Icon Type="caret-down" style="color: #605bff; margin-top:6px" />
+                </div>
+            </Unbound>
+
+
+        </Dropdown>
+    </FormItem>
+    <FormItem Label="Company industry" Class="custom-form-item">
+        <Dropdown @ref=companyIndustryDropdown Trigger="@(new Trigger[] { Trigger.Click })" Placement="@AntDesign.Placement.BottomRight">
+            <Overlay>
+                <Menu Selectable=false>
+                    @if (industries.Any())
+                    {
+                        @foreach (var item in industries)
+                        {
+                            <MenuItem OnClick="(() => {companyIndustryDropdown.Close(); OnCompanyIndustryChanged(item);})">
+                                <span>@item</span>
+                            </MenuItem>
+                        }
+                    }
+                    else
+                    {
+                        <MenuItem>
+                            <Empty Simple=true />
+                        </MenuItem>
+                    }
+                </Menu>
+            </Overlay>
+            <Unbound Context="UnboundContext">
+                <div @ref="UnboundContext.Current" style="display:flex !important; justify-content:space-between; width:100% !important">
+                    <AntDesign.Input @bind-Value="@context.CompanyIndustry" Placeholder="Choose industry" Bordered=false TValue="string" />
+                    <Icon Type="caret-down" style="color: #605bff; margin-top:6px" />
+                </div>
+            </Unbound>
+        </Dropdown>
+    </FormItem>
+    <FormItem Label="How many sales people does your company have?" Class="custom-form-item">
+        <Dropdown @ref=salesTeamSizeDropdown Trigger="@(new Trigger[] { Trigger.Click })" Placement="@AntDesign.Placement.BottomRight">
+            <Overlay>
+                <Menu Selectable=false>
+                    @if (salesTeamSizes.Any())
+                    {
+                        @foreach (var item in salesTeamSizes)
+                        {
+                            <MenuItem OnClick="(() => {salesTeamSizeDropdown.Close(); OnSalesTeamSizeChanged(item);})">
+                                <span>@item</span>
+                            </MenuItem>
+                        }
+                    }
+                    else
+                    {
+                        <MenuItem>
+                            <Empty Simple=true />
+                        </MenuItem>
+                    }
+                </Menu>
+            </Overlay>
+            <Unbound Context="UnboundContext">
+                <div @ref="UnboundContext.Current" style="display:flex !important; justify-content:space-between; width:100% !important">
+                    <AntDesign.Input @bind-Value="@context.SalesTeamSize" Placeholder="Choose sales team size" Bordered=false TValue="string" />
+                    <Icon Type="caret-down" style="color: #605bff; margin-top:6px" />
+                </div>
+            </Unbound>
+        </Dropdown>
+    </FormItem>
+    @*<CheckboxGroup Options="@goals" @bind-Value="@context.Goals" OnChange="OnGoalsChange" />*@
+    <FormItem>
+        <Button Class="identity-button custom-button-primary" HtmlType="submit" Style="background-color: #605BFF;" Type="@AntDesign.ButtonType.Primary">
+            Finish
+        </Button>
+    </FormItem>
+</Form>
+
+
+
+@code {
+
+    Dropdown companySizeDropdown;
+    Dropdown companyIndustryDropdown;
+    Dropdown salesTeamSizeDropdown;
+
+    string[] industries = new PredefineInfo().Industries;
+    string[] companySizes = new PredefineInfo().CompanySizes;
+    string[] salesTeamSizes = new PredefineInfo().SalesTeamSizes;
+
+    string[] goals = new PredefineInfo().Goals;
+
+    public class AboutYourCompanyModel
+    {
+        public string CompanyName { get; set; }
+
+        public string CompanySize { get; set; }
+
+        public string CompanyIndustry { get; set; }
+
+        public string SalesTeamSize { get; set; }
+    }
+
+    AboutYourCompanyModel AboutYourCompanyViewModel = new AboutYourCompanyModel();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+
+    }
+
+    private void OnCompanySizeChanged(string value)
+    {
+        AboutYourCompanyViewModel.CompanySize = value;
+        StateHasChanged();
+    }
+    private void OnSalesTeamSizeChanged(string value)
+    {
+        AboutYourCompanyViewModel.SalesTeamSize = value;
+        StateHasChanged();
+    }
+
+    private void OnCompanyIndustryChanged(string value)
+    {
+        AboutYourCompanyViewModel.CompanyIndustry = value;
+        StateHasChanged();
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        
+    }
+
+    private void OnFinishFailed(EditContext editContext)
+    {
+
+    }
+}

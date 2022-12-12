@@ -1,0 +1,70 @@
+﻿@layout EmptyLayout
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager Navigation
+@using AntDesign
+
+<div class="signup-title-container">
+    <div class="signup-title">Sign Up</div>
+    <div class="signup-description-text">First, you’ll need to create the account</div>
+</div>
+
+<div class="flex-auto signup-email-form-container">
+    <Form Layout="@FormLayout.Vertical"
+          Model="@SignupEmailModel"
+          OnFinish="OnFinish"
+          OnFinishFailed="OnFinishFailed">
+
+        <FormItem Label="Work email" Class="custom-form-item">
+            <Input @bind-Value="@context.Email" Placeholder="Enter your work email" AutoFocus=true AutoComplete=true Bordered=false />
+        </FormItem>
+
+        <FormItem>
+            <Button Class="identity-button custom-button-primary" HtmlType="submit" Style="background-color: #605BFF;" Type="@AntDesign.ButtonType.Primary">
+                Continue
+            </Button>
+        </FormItem>
+        <div class="onboarding-terms-conditions">
+            By signig up, you accept our Terms of Service and Privacy Policy.
+            Already have an account? Sign In
+        </div>
+    </Form>
+    @*}*@
+</div>
+
+
+
+
+
+@code {
+    [Parameter] public Action OnContinueSignup { get; set; }
+
+
+    public class SignUpEmailModel
+    {
+        [Required]
+        public string Email { get; set; }
+    }
+
+    SignUpEmailModel SignupEmailModel = new SignUpEmailModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    private void NavigateToSignUpPage()
+    {
+        Navigation.NavigateTo("signup");
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        OnContinueSignup();
+    }
+
+    private void OnFinishFailed(EditContext editContext)
+    {
+
+    }
+}
+
